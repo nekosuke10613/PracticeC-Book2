@@ -24,6 +24,8 @@ private:
 private:
 	//SDLが作るウィンドウ
 	SDL_Window* m_window;
+	//SDLレンダラー
+	SDL_Renderer* m_renderer;
 	//ゲームの続行を指示
 	bool m_isRunning;
 };

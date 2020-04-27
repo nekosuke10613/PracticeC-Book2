@@ -2,7 +2,7 @@
 
 Game::Game():
 	m_window(nullptr),
-	m_isRunning(nullptr)
+	m_isRunning(true)
 {
 }
 
@@ -40,6 +40,18 @@ bool Game::Initialize()
 		return false;
 	}
 
+	//レンダラーの作成
+	m_renderer = SDL_CreateRenderer(
+		m_window,//作成するレンダラーの描画対象となるウィンドウ
+		-1,		 //グラフィックスドライバの指定　通常はー１
+		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+	);
+	//レンダラー作成が失敗したか
+	if (!m_renderer) {
+		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
+		return false;
+	}
+
 	//ここまで来たら成功
 	return true;
 }
@@ -58,11 +70,30 @@ void Game::Shutdown()
 {
 	//Windowを破棄する
 	SDL_DestroyWindow(m_window);
+	SDL_DestroyRenderer(m_renderer);
 	SDL_Quit();
 }
 
 void Game::ProcessInput()
 {
+	SDL_Event event;
+	//キューにイベントがあれば繰り返す
+	//SDL_PollEvent(SDL_Event型のポインタ)
+	while (SDL_PollEvent(&event)) {
+		switch ((event.type))
+		{
+			//各種イベントの処理
+		case SDL_QUIT: //閉じるボタンなどでWindoｗ閉滋養としたら
+			m_isRunning = false;
+			break;
+		}
+	}
+	//キーボード全体の状態
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+	//Escape押したら
+	if (state[SDL_SCANCODE_ESCAPE]) {
+		m_isRunning = false;
+	}
 }
 
 void Game::UpdateGame()
@@ -71,4 +102,16 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
+	//描画色の指定
+	SDL_SetRenderDrawColor(
+		m_renderer,
+		255,	// R
+		150,	// G
+		150,    // B
+		255		// A
+	);
+	//バックバッファのクリア
+	SDL_RenderClear(m_renderer);
+	//フロントバッファとバックバッファを交換
+	SDL_RenderPresent(m_renderer);
 }
