@@ -1,21 +1,15 @@
-// ----------------------------------------------------------------
-// From Game Programming in C++ by Sanjay Madhav
-// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
-// 
-// Released under the BSD License
-// See LICENSE in root directory for full details.
-// ----------------------------------------------------------------
-
 #include "Game.h"
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 	Game game;
 	bool success = game.Initialize();
-	if (success)
-	{
+	if (success) {
 		game.RunLoop();
 	}
 	game.Shutdown();
 	return 0;
 }
+//規約
+//クラス関数GameUpdate()
+//メンバ変数m_gameOne
+//変数　gameOne
