@@ -26,6 +26,13 @@ private:
 	SDL_Window* m_window;
 	//SDLレンダラー
 	SDL_Renderer* m_renderer;
+	//Initから経過した時間
+	Uint32 m_ticksCount;
 	//ゲームの続行を指示
 	bool m_isRunning;
+
+private:
+	Vector2 m_paddlePos;
+	Vector2 m_ballPos;
+
 };

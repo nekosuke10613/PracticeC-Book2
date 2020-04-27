@@ -1,5 +1,8 @@
 #include"Game.h"
 
+const int THICKNESS = 15;
+const float PADDLE_H = 100.0f;
+
 Game::Game():
 	m_window(nullptr),
 	m_isRunning(true)
@@ -98,6 +101,21 @@ void Game::ProcessInput()
 
 void Game::UpdateGame()
 {
+	//フレーム制限　フレーム間少なくとも必ず～ms経過させたい
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), m_ticksCount = 16));
+
+	//deltaTimeは前のフレームとの時刻の差を秒に変換した値
+	float deltaTime = (SDL_GetTicks() - m_ticksCount) / 1000.0f;
+	
+	//deltaTimeを最大値で制限する（ブレークポイント等対策）
+	if (deltaTime > 0.05f) {
+		deltaTime = 0.05f;
+	}
+	
+	//時刻を更新（次フレーム用）
+	m_ticksCount = SDL_GetTicks();//SDL_Initから経過した時間
+
+
 }
 
 void Game::GenerateOutput()
@@ -112,6 +130,48 @@ void Game::GenerateOutput()
 	);
 	//バックバッファのクリア
 	SDL_RenderClear(m_renderer);
+
+	//ゲームの処理
+
+	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+	//上壁
+	SDL_Rect wall{
+		0,		//左上隅のｘ
+		0,		//左上隅のｙ
+		1280,	//幅
+		THICKNESS //高さ
+	};
+	SDL_RenderFillRect(m_renderer, &wall);
+	//下壁
+	wall.y = 720 - THICKNESS;
+	SDL_RenderFillRect(m_renderer, &wall);
+	//右壁
+	wall.x = 1280 - THICKNESS;
+	wall.y = 0;
+	wall.w = THICKNESS;
+	wall.h = 1024;
+	SDL_RenderFillRect(m_renderer, &wall);
+
+	//パドル描画
+	SDL_Rect paddle{
+		//static_cast float→intにしている
+		static_cast<int>(m_paddlePos.x),
+		static_cast<int>(m_paddlePos.y - PADDLE_H / 2),
+		THICKNESS,
+		static_cast<int>(PADDLE_H),
+	};
+	SDL_RenderFillRect(m_renderer, &paddle);
+
+	//ボール描画
+	SDL_Rect ball{
+		//static_cast float→intにしている
+		static_cast<int>(m_ballPos.x - THICKNESS / 2),
+		static_cast<int>(m_ballPos.y - THICKNESS / 2),
+		THICKNESS,
+		THICKNESS,
+	};
+	SDL_RenderFillRect(m_renderer, &ball);
+
 	//フロントバッファとバックバッファを交換
 	SDL_RenderPresent(m_renderer);
 }
