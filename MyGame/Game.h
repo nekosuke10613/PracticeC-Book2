@@ -32,7 +32,9 @@ private:
 	bool m_isRunning;
 
 private:
+	int m_paddleDir;
 	Vector2 m_paddlePos;
 	Vector2 m_ballPos;
+	Vector2 m_ballVel;
 
 };

@@ -54,6 +54,12 @@ bool Game::Initialize()
 		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
 		return false;
 	}
+	m_paddlePos.x = 10.0f;
+	m_paddlePos.y = 720.0f / 2.0f;
+	m_ballPos.x = 1280.0f / 2.0f;
+	m_ballPos.y = 720.0f / 2.0f;
+	m_ballVel.x = -200.0f;
+	m_ballVel.y = 235.0f;
 
 	//ここまで来たら成功
 	return true;
@@ -97,6 +103,11 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
+	m_paddleDir = 0;
+	if (state[SDL_SCANCODE_W])
+		m_paddleDir -= 1;
+	if (state[SDL_SCANCODE_S])
+		m_paddleDir += 1;
 }
 
 void Game::UpdateGame()
@@ -106,16 +117,50 @@ void Game::UpdateGame()
 
 	//deltaTimeは前のフレームとの時刻の差を秒に変換した値
 	float deltaTime = (SDL_GetTicks() - m_ticksCount) / 1000.0f;
-	
+
 	//deltaTimeを最大値で制限する（ブレークポイント等対策）
 	if (deltaTime > 0.05f) {
 		deltaTime = 0.05f;
 	}
-	
+
 	//時刻を更新（次フレーム用）
 	m_ticksCount = SDL_GetTicks();//SDL_Initから経過した時間
 
+	//ゲーム処理
+	if (m_paddleDir != 0) {
+		//移動
+		m_paddlePos.y += m_paddleDir * 300.0f * deltaTime;
+		//パドルが画面から出ないようにする
+		if (m_paddlePos.y < (PADDLE_H / 2.0f + THICKNESS))
+			m_paddlePos.y = PADDLE_H / 2.0f - THICKNESS;
+		else if (m_paddlePos.y > (720.0f - PADDLE_H / 2.0f - THICKNESS)) 
+			m_paddlePos.y = 720.0f - PADDLE_H / 2.0f - THICKNESS;
+		
+	}
 
+	//ボール位置更新
+	m_ballPos.x += m_ballVel.x * deltaTime;
+	m_ballPos.y += m_ballVel.y * deltaTime;
+
+	//
+	float diff = m_paddlePos.y - m_ballPos.y;
+	if (diff <= PADDLE_H / 2.0f &&
+		m_ballPos.x <= 25.0f && m_ballPos.x >= 20.0f &&
+		m_ballVel.x < 0.0f) {
+		m_ballVel.x *= -1.0f;
+	}
+	else if (m_ballPos.x <= 0.0f)
+		m_isRunning = false;
+	else if (m_ballPos.x >= (1280.0f - THICKNESS) && m_ballVel.x > 0.0f)
+		m_ballVel.x *= -1.0f;
+		
+		
+	//
+	if (m_ballPos.y <= THICKNESS && m_ballVel.y < 0.0f) {
+		m_ballVel.y *= 1;
+	}
+	else if (m_ballPos.y >= (720 - THICKNESS) && m_ballVel.y > 0.0f)
+		m_ballVel.y *= -1;
 }
 
 void Game::GenerateOutput()
