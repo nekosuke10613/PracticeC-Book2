@@ -25,6 +25,12 @@
     <ClCompile Include="SpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnimSpriteConponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BGSpriteComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -40,6 +46,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SpriteComponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimSpriteConponent.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BGSpriteComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
