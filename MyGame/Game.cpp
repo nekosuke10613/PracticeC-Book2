@@ -229,4 +229,15 @@ void Game::LoadData()
 
 void Game::UnloadData()
 {
+	//アクター削除
+	while (!m_actors.empty())
+	{
+		delete m_actors.back();
+	}
+	//テクスチャの削除
+	for (auto i : m_texture) {
+		SDL_DestroyTexture(i.second);
+	}
+	m_texture.clear();
+
 }
