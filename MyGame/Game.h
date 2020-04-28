@@ -17,6 +17,11 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
+	/* Sprite関係 */
+	void AddSprite(class SpriteComponent* sprite);
+	void RemoveSprite(class SpriteComponent* sprite);
+
+	SDL_Texture* GetTexture(const std::string& fileName);
 
 private:
 	//ゲームループのためのヘルパー関数
@@ -26,10 +31,16 @@ private:
 	void LoadData();
 	void UnloadData();
 private:
+	//テクスチャリソースmap
+	std::unordered_map<std::string, SDL_Texture*> m_texture;
+
 	//ゲーム中の全アクターポインタ格納用
 	std::vector<class Actor*>m_actors;
 	//ゲーム中の待ち状態のアクター群
 	std::vector<class Actor*> m_pendingActors;
+
+	//ゲーム中全スプライトコンポーネント
+	std::vector<class SpriteComponent*> m_sprite;
 
 private:
 	//SDLが作るウィンドウ
@@ -43,10 +54,6 @@ private:
 	//m_actorsを更新しているか
 	bool m_updatetingActors;
 
-private:
-	int m_paddleDir;
-	Vector2 m_paddlePos;
-	Vector2 m_ballPos;
-	Vector2 m_ballVel;
+
 
 };

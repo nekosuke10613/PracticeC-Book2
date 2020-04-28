@@ -2,6 +2,7 @@
 #include"SDL/SDL_image.h"
 #include<algorithm>
 #include"Actor.h"
+#include"SpriteComponent.h"
 
 
 const int THICKNESS = 15;
@@ -58,12 +59,7 @@ bool Game::Initialize()
 		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
 		return false;
 	}
-	m_paddlePos.x = 10.0f;
-	m_paddlePos.y = 720.0f / 2.0f;
-	m_ballPos.x = 1280.0f / 2.0f;
-	m_ballPos.y = 720.0f / 2.0f;
-	m_ballVel.x = -200.0f;
-	m_ballVel.y = 235.0f;
+	
 
 	//ここまで来たら成功
 	return true;
@@ -106,12 +102,38 @@ void Game::RemoveActor(Actor * actor)
 		m_pendingActors.pop_back();
 	}
 	//
-	iter = std::find(m_actors.begin(), m_actors.end(), actor));
+	iter = std::find(m_actors.begin(), m_actors.end(), actor);
 	if(iter != m_actors.end()){
 		//vectorの最後に入れ替えてから出す(コピー削除避け)
 		std::iter_swap(iter, m_actors.end() - 1);
 		m_actors.pop_back();
 	}
+}
+
+void Game::AddSprite(SpriteComponent * sprite)
+{
+	//ソート済みの配列で挿入点を見つける
+	//（自分よりも順序の高い最初の要素の位置）
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto iter = m_sprite.begin();
+	for (; iter != m_sprite.end(); ++iter) {
+		if (myDrawOrder < (*iter)->GetDrawOrder())
+			break;
+	}
+	//iter位置の前に要素を挿入
+	m_sprite.insert(iter, sprite);
+}
+
+void Game::RemoveSprite(SpriteComponent * sprite)
+{
+	//
+	auto iter = std::find(m_sprite.begin(), m_sprite.end(), sprite);
+	m_sprite.erase(iter);
+}
+
+SDL_Texture * Game::GetTexture(const std::string & fileName)
+{
+	return nullptr;
 }
 
 void Game::ProcessInput()
@@ -134,11 +156,6 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
-	m_paddleDir = 0;
-	if (state[SDL_SCANCODE_W])
-		m_paddleDir -= 1;
-	if (state[SDL_SCANCODE_S])
-		m_paddleDir += 1;
 }
 
 void Game::UpdateGame()
@@ -200,44 +217,7 @@ void Game::GenerateOutput()
 
 	//ゲームの処理
 
-	SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-	//上壁
-	SDL_Rect wall{
-		0,		//左上隅のｘ
-		0,		//左上隅のｙ
-		1280,	//幅
-		THICKNESS //高さ
-	};
-	SDL_RenderFillRect(m_renderer, &wall);
-	//下壁
-	wall.y = 720 - THICKNESS;
-	SDL_RenderFillRect(m_renderer, &wall);
-	//右壁
-	wall.x = 1280 - THICKNESS;
-	wall.y = 0;
-	wall.w = THICKNESS;
-	wall.h = 1024;
-	SDL_RenderFillRect(m_renderer, &wall);
-
-	//パドル描画
-	SDL_Rect paddle{
-		//static_cast float→intにしている
-		static_cast<int>(m_paddlePos.x),
-		static_cast<int>(m_paddlePos.y - PADDLE_H / 2),
-		THICKNESS,
-		static_cast<int>(PADDLE_H),
-	};
-	SDL_RenderFillRect(m_renderer, &paddle);
-
-	//ボール描画
-	SDL_Rect ball{
-		//static_cast float→intにしている
-		static_cast<int>(m_ballPos.x - THICKNESS / 2),
-		static_cast<int>(m_ballPos.y - THICKNESS / 2),
-		THICKNESS,
-		THICKNESS,
-	};
-	SDL_RenderFillRect(m_renderer, &ball);
+	
 
 	//フロントバッファとバックバッファを交換
 	SDL_RenderPresent(m_renderer);
