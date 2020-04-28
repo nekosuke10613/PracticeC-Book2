@@ -1,4 +1,8 @@
 #include"Game.h"
+#include"SDL/SDL_image.h"
+#include<algorithm>
+#include"Actor.h"
+
 
 const int THICKNESS = 15;
 const float PADDLE_H = 100.0f;
@@ -83,6 +87,33 @@ void Game::Shutdown()
 	SDL_Quit();
 }
 
+void Game::AddActor(Actor * actor)
+{
+	//アクターの更新中なら待ちに追加
+	if (m_updatetingActors)
+		m_pendingActors.emplace_back(actor);
+	else
+		m_actors.emplace_back(actor);
+}
+
+void Game::RemoveActor(Actor * actor)
+{
+	//子のアクターは待機中か
+	auto iter = std::find(m_pendingActors.begin(), m_pendingActors.end(), actor);
+	if (iter != m_pendingActors.end()) {
+		//vectorの最後に入れ替えてから出す(コピー削除避け)
+		std::iter_swap(iter, m_pendingActors.end() - 1);
+		m_pendingActors.pop_back();
+	}
+	//
+	iter = std::find(m_actors.begin(), m_actors.end(), actor));
+	if(iter != m_actors.end()){
+		//vectorの最後に入れ替えてから出す(コピー削除避け)
+		std::iter_swap(iter, m_actors.end() - 1);
+		m_actors.pop_back();
+	}
+}
+
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -126,41 +157,32 @@ void Game::UpdateGame()
 	//時刻を更新（次フレーム用）
 	m_ticksCount = SDL_GetTicks();//SDL_Initから経過した時間
 
-	//ゲーム処理
-	if (m_paddleDir != 0) {
-		//移動
-		m_paddlePos.y += m_paddleDir * 300.0f * deltaTime;
-		//パドルが画面から出ないようにする
-		if (m_paddlePos.y < (PADDLE_H / 2.0f + THICKNESS))
-			m_paddlePos.y = PADDLE_H / 2.0f - THICKNESS;
-		else if (m_paddlePos.y > (720.0f - PADDLE_H / 2.0f - THICKNESS)) 
-			m_paddlePos.y = 720.0f - PADDLE_H / 2.0f - THICKNESS;
-		
+	/*   アクター関連   */
+	//全アクター更新
+	m_updatetingActors = true;
+	for (auto actor : m_actors) {
+		actor->Update(deltaTime);
+	}
+	m_updatetingActors = false;
+
+	//待ちアクターをm_actorsに移動する
+	for (auto pending : m_pendingActors) {
+		m_actors.emplace_back(pending);
+	}
+	m_pendingActors.clear();
+
+	//死亡状態のアクターをvector仮入れ
+	std::vector<Actor*> deadActors;
+	for (auto actor : m_actors) {
+		if (actor->GetScale() == Actor::EDead) {
+			deadActors.emplace_back(actor);
+		}
+	}
+	//死亡状態アクターの削除
+	for (auto actor : deadActors) {
+		delete actor;
 	}
 
-	//ボール位置更新
-	m_ballPos.x += m_ballVel.x * deltaTime;
-	m_ballPos.y += m_ballVel.y * deltaTime;
-
-	//
-	float diff = m_paddlePos.y - m_ballPos.y;
-	if (diff <= PADDLE_H / 2.0f &&
-		m_ballPos.x <= 25.0f && m_ballPos.x >= 20.0f &&
-		m_ballVel.x < 0.0f) {
-		m_ballVel.x *= -1.0f;
-	}
-	else if (m_ballPos.x <= 0.0f)
-		m_isRunning = false;
-	else if (m_ballPos.x >= (1280.0f - THICKNESS) && m_ballVel.x > 0.0f)
-		m_ballVel.x *= -1.0f;
-		
-		
-	//
-	if (m_ballPos.y <= THICKNESS && m_ballVel.y < 0.0f) {
-		m_ballVel.y *= 1;
-	}
-	else if (m_ballPos.y >= (720 - THICKNESS) && m_ballVel.y > 0.0f)
-		m_ballVel.y *= -1;
 }
 
 void Game::GenerateOutput()
@@ -219,4 +241,12 @@ void Game::GenerateOutput()
 
 	//フロントバッファとバックバッファを交換
 	SDL_RenderPresent(m_renderer);
+}
+
+void Game::LoadData()
+{
+}
+
+void Game::UnloadData()
+{
 }

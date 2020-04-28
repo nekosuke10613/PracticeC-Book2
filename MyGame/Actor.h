@@ -1,0 +1,57 @@
+#pragma once
+#include<vector>
+#include"Math.h"
+
+//アクタークラス 
+//依存性の注入(dependency injection)パターン
+class Actor {
+public :
+	//アクターの状態管理用
+	enum State {
+		EActive,
+		EPaused,
+		EDead,
+	};
+	Actor(class Game* game);
+	virtual ~Actor();
+
+	//ゲームから呼ばれる更新(override不可)
+	void Update(float deltaTime);
+	//コンポーネントを更新(override不可)
+	void UpdateComponents(float deltaTime);
+	//アクター独自の更新処理(override可)
+	virtual void UpdateActor(float deltaTime);
+
+	/*  ゲッター/セッター   */
+	//Pos
+	const Vector2& GetPosition() const { return m_position; }
+	void SetPosition(const Vector2& pos) { m_position = pos; }
+	//Scale
+	float GetScale()const { return m_scale; }
+	void SetScale(float scale) { m_scale = scale; }
+	//Rotation
+	float GetRotation()const { return m_rotation; }
+	void SetRotation(float rotation) { m_rotation - rotation; }
+	//state
+	State GetState()const { return m_state; }
+	void SetState(State state) { m_state = state; }
+
+	class Game* GetGame() { return m_game; }
+
+
+	//コンポーネントの追加・削除
+	void AddComponent(class Component* component);
+	void RemoveComponent(class Component* conponent);
+
+private:
+	//アクターの状態
+	State m_state;
+	//座標変換
+	Vector2 m_position;
+	float m_scale;
+	float m_rotation;
+	
+	//アクターが持つコンポーネント
+	std::vector<class Component*> m_components;
+	class Game* m_game;
+};
