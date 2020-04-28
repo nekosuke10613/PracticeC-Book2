@@ -54,6 +54,6 @@ private:
 	//m_actors‚ğXV‚µ‚Ä‚¢‚é‚©
 	bool m_updatetingActors;
 
-
+	class Ship* m_ship;
 
 };

@@ -3,14 +3,15 @@
 #include<algorithm>
 #include"Actor.h"
 #include"SpriteComponent.h"
+#include"Ship.h"
+#include "BGSpriteComponent.h"
 
 
-const int THICKNESS = 15;
-const float PADDLE_H = 100.0f;
-
-Game::Game():
+Game::Game() :
 	m_window(nullptr),
-	m_isRunning(true)
+	m_renderer(nullptr),
+	m_isRunning(true),
+	m_updatetingActors(false)
 {
 }
 
@@ -23,7 +24,7 @@ bool Game::Initialize()
 	//SDL_INIT_VIDEO　ビデオサブシステム
 	//SDL_INIT_HAPTIC　フォースフィードバック(振動など)サブシステム
 	//SDL_INIT＿GAMECONTROLLER　コントローラ入力デバイスをサポートsルためのサブシステム
-	int sdlResult = SDL_Init(SDL_INIT_VIDEO);
+	int sdlResult = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 	//SDL初期化が失敗したか
 	if (sdlResult != 0) {
 		SDL_Log("SDL を初期化できません：%s", SDL_GetError());
@@ -59,10 +60,59 @@ bool Game::Initialize()
 		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
 		return false;
 	}
+	if (IMG_Init(IMG_INIT_PNG) == 0) {
+		SDL_Log("SDL_Imageの作成に失敗しました:%s", SDL_GetError());
+		return false;
+	}
+	LoadData();
+
+	m_ticksCount = SDL_GetTicks();
 	
 
 	//ここまで来たら成功
 	return true;
+}
+void Game::LoadData()
+{
+	m_ship = new Ship(this);
+	m_ship->SetPosition(Vector2(100.0f, 384.0f));
+	m_ship->SetScale(1.5f);
+
+	Actor* temp = new Actor(this);
+	temp->SetPosition(Vector2(512.0f, 384.0f));
+
+	BGSpriteComponent* bg = new BGSpriteComponent(temp);
+	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	std::vector<SDL_Texture*> bgtexs = {
+		GetTexture("Assets/Farback01.png"),
+		GetTexture("Assets/Farback02.png")
+	};
+	bg->SetBGTexture(bgtexs);
+	bg->SetScrollSpeed(-100.0f);
+
+	bg = new BGSpriteComponent(temp, 50);
+	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	bgtexs = {
+		GetTexture("Assets/Stars.png"),
+		GetTexture("Assets/Stars.png")
+	};
+	bg->SetBGTexture(bgtexs);
+	bg->SetScrollSpeed(-200.0f);
+}
+
+void Game::UnloadData()
+{
+	//アクター削除
+	while (!m_actors.empty())
+	{
+		delete m_actors.back();
+	}
+	//テクスチャの削除
+	for (auto i : m_texture) {
+		SDL_DestroyTexture(i.second);
+	}
+	m_texture.clear();
+
 }
 
 void Game::RunLoop()
@@ -77,6 +127,8 @@ void Game::RunLoop()
 
 void Game::Shutdown()
 {
+	UnloadData();
+	IMG_Quit();
 	//Windowを破棄する
 	SDL_DestroyWindow(m_window);
 	SDL_DestroyRenderer(m_renderer);
@@ -133,7 +185,31 @@ void Game::RemoveSprite(SpriteComponent * sprite)
 
 SDL_Texture * Game::GetTexture(const std::string & fileName)
 {
-	return nullptr;
+	SDL_Texture* tex = nullptr;
+	//すでに読み込まれているテクスチャなら検索して持ってくる
+	auto iter = m_texture.find(fileName);
+	if (iter != m_texture.end()) {
+		tex = iter->second;
+	}
+	else {
+		//ファイルをロードする
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf) {
+			SDL_Log("テクスチャのロードに失敗しました%s:", fileName.c_str());
+			return nullptr;
+		}
+
+		//surfaceテクスチャ作成
+		tex = SDL_CreateTextureFromSurface(m_renderer, surf);
+		SDL_FreeSurface(surf);
+		if (!tex) {
+			SDL_Log("surfaceのテクスチャ変換に失敗しました ファイル名:%s", fileName.c_str());
+			return nullptr;
+		}
+
+		m_texture.emplace(fileName.c_str(), tex);
+	}
+	return tex;
 }
 
 void Game::ProcessInput()
@@ -156,6 +232,7 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
+	m_ship->ProceessKeyboard(state);
 }
 
 void Game::UpdateGame()
@@ -216,28 +293,15 @@ void Game::GenerateOutput()
 	SDL_RenderClear(m_renderer);
 
 	//ゲームの処理
-
+	// Draw all sprite components
+	for (auto sprite : m_sprite)
+	{
+		sprite->Draw(m_renderer);
+	}
 	
 
 	//フロントバッファとバックバッファを交換
 	SDL_RenderPresent(m_renderer);
 }
 
-void Game::LoadData()
-{
-}
 
-void Game::UnloadData()
-{
-	//アクター削除
-	while (!m_actors.empty())
-	{
-		delete m_actors.back();
-	}
-	//テクスチャの削除
-	for (auto i : m_texture) {
-		SDL_DestroyTexture(i.second);
-	}
-	m_texture.clear();
-
-}
