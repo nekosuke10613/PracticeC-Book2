@@ -34,6 +34,12 @@
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Animal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -60,5 +66,7 @@
     <ClInclude Include="Ship.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Animal.h" />
+    <ClInclude Include="Cat.h" />
   </ItemGroup>
 </Project>

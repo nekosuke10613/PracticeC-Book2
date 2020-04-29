@@ -5,6 +5,7 @@
 #include"SpriteComponent.h"
 #include"Ship.h"
 #include "BGSpriteComponent.h"
+#include"Cat.h"
 
 
 Game::Game() :
@@ -77,6 +78,10 @@ void Game::LoadData()
 	m_ship = new Ship(this);
 	m_ship->SetPosition(Vector2(100.0f, 384.0f));
 	m_ship->SetScale(1.5f);
+
+	m_cat = new Cat(this);
+	m_cat->SetPosition(Vector2(100,300));
+	m_cat->SetScale(1.0f);
 
 	Actor* temp = new Actor(this);
 	temp->SetPosition(Vector2(512.0f, 384.0f));

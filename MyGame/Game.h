@@ -55,5 +55,6 @@ private:
 	bool m_updatetingActors;
 
 	class Ship* m_ship;
+	class Cat* m_cat;
 
 };
