@@ -16,4 +16,3 @@ Component::~Component()
 void Component::Update(float deltaTime)
 {
 }
-

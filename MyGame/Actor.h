@@ -1,6 +1,7 @@
 #pragma once
 #include<vector>
 #include"Math.h"
+#include<cstdint>
 
 //アクタークラス 
 //依存性の注入(dependency injection)パターン
@@ -28,7 +29,8 @@ public :
 	/*  ゲッター/セッター   */
 	//Pos
 	const Vector2& GetPosition() const { return m_position; }
-	void SetPosition(const Vector2& pos) { m_position = pos; }
+	void SetPosition(const Vector2& pos) {
+		m_position = pos; }
 	//Scale
 	float GetScale()const { return m_scale; }
 	void SetScale(float scale) { m_scale = scale; }
@@ -36,8 +38,8 @@ public :
 	float GetRotation()const { return m_rotation; }
 	void SetRotation(float rotation) { m_rotation = rotation; }
 	
-	Vector2 GetForward()const { return Vector2(Math::Cos(m_rotation), -Math::Sin(m_rotation)); }
-	
+	Vector2 GetForward() const { return Vector2(Math::Cos(m_rotation), -Math::Sin(m_rotation)); }
+
 	//state
 	State GetState()const { return m_state; }
 	void SetState(State state) { m_state = state; }

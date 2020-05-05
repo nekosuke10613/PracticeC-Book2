@@ -18,7 +18,7 @@ void InputComponent::ProcessInput(const uint8_t * keyState)
 		forwardSpeed += m_maxForwardSpeed;
 	if (keyState[m_backKey])
 		forwardSpeed -= m_maxForwardSpeed;
-	SetFOrwardSpeed(forwardSpeed);
+	SetForwardSpeed(forwardSpeed);
 
 	//MoveComponent‚Ì‚½‚ß‚É‰ñ“]‘¬“x‚ðŒvŽZ
 	float angularSpeed  = 0.0f;

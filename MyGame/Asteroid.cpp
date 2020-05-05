@@ -21,7 +21,7 @@ Asteroid::Asteroid(Game * game):
 
 	//運動コンポーネントを作成し、全身速度を設定する
 	MoveComponent* mc = new MoveComponent(this);
-	mc->SetFOrwardSpeed(150.0f);
+	mc->SetForwardSpeed(150.0f);
 
 	//Circleコンポーネントを作成する
 

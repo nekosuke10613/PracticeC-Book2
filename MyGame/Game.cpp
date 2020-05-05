@@ -82,11 +82,11 @@ void Game::LoadData()
 	m_ship = new Ship(this);
 	m_ship->SetPosition(Vector2(512.0f, 384.0f));
 	m_ship->SetRotation(Math::PiOver2);
-	//è¦Î
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++) {
-		new Asteroid(this);
-	}
+	////è¦Î
+	//const int numAsteroids = 20;
+	//for (int i = 0; i < numAsteroids; i++) {
+	//	new Asteroid(this);
+	//}
 
 }
 
