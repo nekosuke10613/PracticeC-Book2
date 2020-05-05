@@ -2,6 +2,7 @@
 #include<vector>
 #include"Math.h"
 #include<cstdint>
+#include"SDL/SDL.h"
 
 //アクタークラス 
 //依存性の注入(dependency injection)パターン

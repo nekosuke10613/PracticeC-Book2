@@ -26,7 +26,7 @@ void SpriteComponent::Draw(SDL_Renderer * renderer)
 		r.h = static_cast<int>(m_texHeight * m_owner->GetScale());
 		//矩形の中心を所有アクターの位置に合わせる
 		r.x = static_cast<int>(m_owner->GetPosition().x - r.w / 2);
-		r.y = static_cast<int>(m_owner->GetPosition().x - r.w / 2);
+		r.y = static_cast<int>(m_owner->GetPosition().y - r.w / 2);
 
 		//描画する
 		SDL_RenderCopyEx(renderer,
