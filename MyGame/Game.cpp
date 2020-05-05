@@ -236,7 +236,11 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
-	m_ship->ProceessKeyboard(state);
+	m_updatetingActors = true;
+	for (auto actor : m_actors) {
+		actor->ProcessInput(state);
+	}
+	m_updatetingActors = false;
 }
 
 void Game::UpdateGame()

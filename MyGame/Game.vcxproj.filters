@@ -43,6 +43,9 @@
     <ClCompile Include="Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InputComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -72,5 +75,6 @@
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="InputComponent.h" />
   </ItemGroup>
 </Project>

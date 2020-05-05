@@ -1,57 +1,30 @@
 #include "Ship.h"
-#include"AnimSpriteConponent.h"
+#include"SpriteComponent.h"
+#include"InputComponent.h"
 #include"Game.h"
 
 Ship::Ship(Game * game):
-	Actor(game),
-	m_rightSpeed(0.0f),
-	m_downSpeed(0.0f)
+	Actor(game)
 {
 	SpriteComponent* sc = new SpriteComponent(this, 150);
 	sc->SetTexture(game->GetTexture("Assets/Ship.png"));
+
+	InputComponent* ic = new InputComponent(this);
+	ic->SetForwardKey(SDL_SCANCODE_W);
+	ic->SetBackKey(SDL_SCANCODE_S);
+	ic->SetClockwiseKey(SDL_SCANCODE_A);
+	ic->SetCounterClockwiseKey(SDL_SCANCODE_D);
+	ic->SetMaxForwardSpeed(300.0f);
+	ic->SetMaxAngularSpeed(Math::TwoPi);
 }
 
 void Ship::UpdateActor(float deltaTime)
 {
-	Actor::UpdateActor(deltaTime);
-
-	Vector2 pos = GetPosition();
-	pos.x = pos.x + m_rightSpeed * deltaTime;
-	pos.y = pos.y + m_downSpeed * deltaTime;
-
-	if (pos.x < 25.0f)
-		pos.x = 25.0f;
-	else if (pos.x > 500.0f)
-		pos.x = 500.0f;
-
-	if (pos.y < 25.0f)
-		pos.y = 25.0f;
-	else if (pos.y > 743.0f)
-		pos.y = 743.0f;
-
-	SetPosition(pos);
+	
 
 }
-void Ship::ProceessKeyboard(const uint8_t * state)
+
+void Ship::ActorInput(const uint8_t * keyState)
 {
-	m_rightSpeed = 0.0f;
-	m_downSpeed = 0.0f;
-	// right/left
-	if (state[SDL_SCANCODE_D])
-	{
-		m_rightSpeed = 250.0f;
-	}
-	else if (state[SDL_SCANCODE_A])
-	{
-		m_rightSpeed = -250.0f;
-	}
-	// up/down
-	else if (state[SDL_SCANCODE_S])
-	{
-		m_downSpeed = 300.0f;
-	}
-	else if (state[SDL_SCANCODE_W])
-	{
-		m_downSpeed = -300.0f;
-	}
+	
 }
