@@ -7,14 +7,8 @@ Ship::Ship(Game * game):
 	m_rightSpeed(0.0f),
 	m_downSpeed(0.0f)
 {
-	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
-	std::vector<SDL_Texture*>anims = {
-		game->GetTexture("Assets/Ship01.png"),
-		game->GetTexture("Assets/Ship02.png"),
-		game->GetTexture("Assets/Ship03.png"),
-		game->GetTexture("Assets/Ship04.png"),
-	};
-	asc->SetAnimTextures(anims);
+	SpriteComponent* sc = new SpriteComponent(this, 150);
+	sc->SetTexture(game->GetTexture("Assets/Ship.png"));
 }
 
 void Ship::UpdateActor(float deltaTime)
@@ -22,8 +16,8 @@ void Ship::UpdateActor(float deltaTime)
 	Actor::UpdateActor(deltaTime);
 
 	Vector2 pos = GetPosition();
-	pos.x += m_rightSpeed * deltaTime;
-	pos.y += m_downSpeed * deltaTime;
+	pos.x = pos.x + m_rightSpeed * deltaTime;
+	pos.y = pos.y + m_downSpeed * deltaTime;
 
 	if (pos.x < 25.0f)
 		pos.x = 25.0f;
@@ -45,19 +39,19 @@ void Ship::ProceessKeyboard(const uint8_t * state)
 	// right/left
 	if (state[SDL_SCANCODE_D])
 	{
-		m_rightSpeed += 250.0f;
+		m_rightSpeed = 250.0f;
 	}
-	if (state[SDL_SCANCODE_A])
+	else if (state[SDL_SCANCODE_A])
 	{
-		m_rightSpeed -= 250.0f;
+		m_rightSpeed = -250.0f;
 	}
 	// up/down
-	if (state[SDL_SCANCODE_S])
+	else if (state[SDL_SCANCODE_S])
 	{
-		m_downSpeed += 300.0f;
+		m_downSpeed = 300.0f;
 	}
-	if (state[SDL_SCANCODE_W])
+	else if (state[SDL_SCANCODE_W])
 	{
-		m_downSpeed -= 300.0f;
+		m_downSpeed = -300.0f;
 	}
 }

@@ -42,6 +42,20 @@ void Actor::UpdateActor(float deltaTime)
 {
 }
 
+void Actor::ProcessInput(const uint8_t * keyState)
+{
+	if (m_state == EActive) {
+		for (auto comp : m_components) {
+			comp->ProcessInput(keyState);
+		}
+		ActorInput(keyState);
+	}
+}
+
+void Actor::ActorInput(const uint8_t * keyState)
+{
+}
+
 void Actor::AddComponent(Component * component)
 {
 	//orderè≠Ç»Ç¢èáÇ…É\Å[Ég

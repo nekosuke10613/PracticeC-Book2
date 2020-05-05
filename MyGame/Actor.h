@@ -22,6 +22,9 @@ public :
 	//アクター独自の更新処理(override可)
 	virtual void UpdateActor(float deltaTime);
 
+	void ProcessInput(const uint8_t* keyState);
+	virtual void ActorInput(const uint8_t* keyState);
+
 	/*  ゲッター/セッター   */
 	//Pos
 	const Vector2& GetPosition() const { return m_position; }
@@ -31,7 +34,10 @@ public :
 	void SetScale(float scale) { m_scale = scale; }
 	//Rotation
 	float GetRotation()const { return m_rotation; }
-	void SetRotation(float rotation) { m_rotation - rotation; }
+	void SetRotation(float rotation) { m_rotation = rotation; }
+	
+	Vector2 GetForward()const { return Vector2(Math::Cos(m_rotation), -Math::Sin(m_rotation)); }
+	
 	//state
 	State GetState()const { return m_state; }
 	void SetState(State state) { m_state = state; }

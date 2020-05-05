@@ -22,6 +22,12 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	SDL_Texture* GetTexture(const std::string& fileName);
+	
+	//ゲーム用
+	void AddAsteroid(class Asteroid* ast);
+	void RemoveAsteroid(class Asteroid* ast);
+	std::vector<class Asteroid*>& GetAsteroids() { return m_asteroids; }
+
 
 private:
 	//ゲームループのためのヘルパー関数
@@ -54,6 +60,9 @@ private:
 	//m_actorsを更新しているか
 	bool m_updatetingActors;
 
+	//ゲーム用
 	class Ship* m_ship;
+	std::vector<class Asteroid*> m_asteroids;
+
 
 };

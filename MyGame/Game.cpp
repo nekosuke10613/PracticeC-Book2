@@ -1,10 +1,15 @@
 #include"Game.h"
 #include"SDL/SDL_image.h"
 #include<algorithm>
+
+//Actor
 #include"Actor.h"
-#include"SpriteComponent.h"
 #include"Ship.h"
+#include"Asteroid.h"
+
+//Component
 #include "BGSpriteComponent.h"
+#include"SpriteComponent.h"
 
 
 Game::Game() :
@@ -39,8 +44,8 @@ bool Game::Initialize()
 		"MagicGame",//Windowのタイトル
 		100,		//ウィンドウ左端隅のX座標
 		100,		//ウィンドウ左端隅のｙ座標
-		1280,		//ウィンドウの幅
-		720,		//ウィンドウの高さ
+		1024,		//ウィンドウの幅
+		768,		//ウィンドウの高さ
 		0			//ウィンドウ作成フラグ(設定しない時は０)
 	);
 	//ウィンドウ作成が失敗したか(失敗したらnullptr)
@@ -75,29 +80,14 @@ bool Game::Initialize()
 void Game::LoadData()
 {
 	m_ship = new Ship(this);
-	m_ship->SetPosition(Vector2(100.0f, 384.0f));
-	m_ship->SetScale(1.5f);
+	m_ship->SetPosition(Vector2(512.0f, 384.0f));
+	m_ship->SetRotation(Math::PiOver2);
+	//隕石
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++) {
+		new Asteroid(this);
+	}
 
-	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
-
-	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgtexs = {
-		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
-	};
-	bg->SetBGTexture(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
-
-	bg = new BGSpriteComponent(temp, 50);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
-		GetTexture("Assets/Stars.png"),
-		GetTexture("Assets/Stars.png")
-	};
-	bg->SetBGTexture(bgtexs);
-	bg->SetScrollSpeed(-200.0f);
 }
 
 void Game::UnloadData()
@@ -210,6 +200,20 @@ SDL_Texture * Game::GetTexture(const std::string & fileName)
 		m_texture.emplace(fileName.c_str(), tex);
 	}
 	return tex;
+}
+
+void Game::AddAsteroid(Asteroid * ast)
+{
+	m_asteroids.emplace_back(ast);
+}
+
+void Game::RemoveAsteroid(Asteroid * ast)
+{
+	auto iter = std::find(m_asteroids.begin(),
+		m_asteroids.end(), ast);
+	if (iter != m_asteroids.end()) {
+		m_asteroids.erase(iter);
+	}
 }
 
 void Game::ProcessInput()
