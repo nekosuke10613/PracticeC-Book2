@@ -4,6 +4,8 @@
 #include"MoveComponent.h"
 #include"Random.h"
 #include"CircleComponent.h"
+#include"AIComponent.h"
+#include"AIState.h"
 
 
 Asteroid::Asteroid(Game * game):
@@ -27,8 +29,16 @@ Asteroid::Asteroid(Game * game):
 	//Circleコンポーネントを作成する
 	m_circle = new CircleComponent(this);
 	m_circle->SetRadius(40.0f);
+
+	AIComponent* ac = new AIComponent(this);
+	ac->AddState(new AIPatrol(ac));
+	ac->AddState(new AIAttack(ac));
+	ac->AddState(new AIDeath(ac));
+	//stringで指定するの嫌い
+	ac->ChangeState("Patrol");
 	
 	game->AddAsteroid(this);
+
 }
 
 Asteroid::~Asteroid()
