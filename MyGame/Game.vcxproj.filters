@@ -49,6 +49,9 @@
     <ClCompile Include="CircleComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Laser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -80,5 +83,6 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="CircleComponent.h" />
+    <ClInclude Include="Laser.h" />
   </ItemGroup>
 </Project>

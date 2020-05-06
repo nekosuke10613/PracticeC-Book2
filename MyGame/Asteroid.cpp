@@ -3,6 +3,7 @@
 #include"SpriteComponent.h"
 #include"MoveComponent.h"
 #include"Random.h"
+#include"CircleComponent.h"
 
 
 Asteroid::Asteroid(Game * game):
@@ -24,7 +25,8 @@ Asteroid::Asteroid(Game * game):
 	mc->SetForwardSpeed(150.0f);
 
 	//Circleコンポーネントを作成する
-
+	m_circle = new CircleComponent(this);
+	m_circle->SetRadius(40.0f);
 	
 	game->AddAsteroid(this);
 }
