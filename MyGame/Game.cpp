@@ -104,6 +104,7 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
+
 	m_updatetingActors = true;
 	for (auto actor : m_actors) {
 		actor->ProcessInput(state);
@@ -142,7 +143,7 @@ void Game::UpdateGame()
 	//死亡状態のアクターをvector仮入れ
 	std::vector<Actor*> deadActors;
 	for (auto actor : m_actors) {
-		if (actor->GetScale() == Actor::EDead) {
+		if (actor->GetState() == Actor::EDead) {
 			deadActors.emplace_back(actor);
 		}
 	}
