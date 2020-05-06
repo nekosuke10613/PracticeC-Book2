@@ -16,6 +16,7 @@
     <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="BGSpriteComponent.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
+    <ClCompile Include="CollisionComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputComponent.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="Asteroid.h" />
     <ClInclude Include="BGSpriteComponent.h" />
     <ClInclude Include="CircleComponent.h" />
+    <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="InputComponent.h" />
