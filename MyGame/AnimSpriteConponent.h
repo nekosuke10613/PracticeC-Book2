@@ -13,7 +13,7 @@ public:
 private:
 	std::vector<SDL_Texture*> m_animTextures;
 	//現在のフレーム
-	float m_currentFrame;
+	float m_currentFrame{ 0.0f };
 	//アニメーションフレームレート
-	float m_animFPS;
+	float m_animFPS{ 24.0f };
 };

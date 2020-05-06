@@ -18,9 +18,9 @@ public:
 	int GetTexWidth()const { return m_texWidth; }
 
 protected:
-	SDL_Texture* m_texture;
+	SDL_Texture* m_texture{ nullptr };
 	int m_drawOrder;
-	int m_texWidth;
-	int m_texHeight;
+	int m_texWidth{ 0 };
+	int m_texHeight{ 0 };
 
 };

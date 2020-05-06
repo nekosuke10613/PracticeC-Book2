@@ -54,11 +54,11 @@ public :
 
 private:
 	//アクターの状態
-	State m_state;
+	State m_state{ EActive };
 	//座標変換
-	Vector2 m_position;
-	float m_scale;
-	float m_rotation;
+	Vector2 m_position{Vector2::Zero};
+	float m_scale{ 1.0f };
+	float m_rotation{ 0.0f };
 	
 	//アクターが持つコンポーネント
 	std::vector<class Component*> m_components;

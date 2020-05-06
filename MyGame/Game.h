@@ -50,15 +50,15 @@ private:
 
 private:
 	//SDLが作るウィンドウ
-	SDL_Window* m_window;
+	SDL_Window* m_window{ nullptr };
 	//SDLレンダラー
-	SDL_Renderer* m_renderer;
+	SDL_Renderer* m_renderer{ nullptr };
 	//Initから経過した時間
 	Uint32 m_ticksCount;
 	//ゲームの続行を指示
-	bool m_isRunning;
+	bool m_isRunning{ true };
 	//m_actorsを更新しているか
-	bool m_updatetingActors;
+	bool m_updatetingActors{ false };
 
 	//ゲーム用
 	class Ship* m_ship;

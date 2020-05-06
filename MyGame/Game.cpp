@@ -13,11 +13,7 @@
 #include"SpriteComponent.h"
 
 
-Game::Game() :
-	m_window(nullptr),
-	m_renderer(nullptr),
-	m_isRunning(true),
-	m_updatetingActors(false)
+Game::Game()
 {
 }
 

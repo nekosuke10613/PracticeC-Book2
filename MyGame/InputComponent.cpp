@@ -2,11 +2,7 @@
 #include"Actor.h"
 
 InputComponent::InputComponent(Actor * owner):
-	MoveComponent(owner),
-	m_forwardKey(0),
-	m_backKey(0),
-	m_clockwiseKey(0),
-	m_counterClockwiseKey(0)
+	MoveComponent(owner)
 {
 }
 

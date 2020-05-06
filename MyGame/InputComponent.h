@@ -26,13 +26,13 @@ public:
 
 private:
 	//前進・回転の最大速度
-	float m_maxForwardSpeed;
-	float m_maxAngularSpeed;
+	float m_maxForwardSpeed{ 0.0f };
+	float m_maxAngularSpeed{ 0.0f };
 	//前進・後退のためのキー
-	int m_forwardKey;
-	int m_backKey;
+	int m_forwardKey{ 0 };
+	int m_backKey{ 0 };
 	//回転移動のためのキー
-	int m_clockwiseKey;
-	int m_counterClockwiseKey;
+	int m_clockwiseKey{ 0 };
+	int m_counterClockwiseKey{ 0 };
 
 };

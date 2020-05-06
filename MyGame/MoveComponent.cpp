@@ -3,8 +3,6 @@
 
 MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
 	:Component(owner, updateOrder)
-	, m_angularSpeed(0.0f)
-	, m_forwardSpeed(0.0f)
 {
 
 }

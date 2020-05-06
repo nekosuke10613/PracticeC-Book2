@@ -4,10 +4,6 @@
 #include<algorithm>
 
 Actor::Actor(Game * game):
-	m_state(EActive),
-	m_position(Vector2::Zero),
-	m_scale(1.0f),
-	m_rotation(0.0f),
 	m_game(game)
 {
 	m_game->AddActor(this);
