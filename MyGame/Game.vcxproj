@@ -46,6 +46,7 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Search.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="SpriteComponent.h" />
   </ItemGroup>

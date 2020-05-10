@@ -96,5 +96,6 @@
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="AIState.h" />
     <ClInclude Include="AIComponent.h" />
+    <ClInclude Include="Search.h" />
   </ItemGroup>
 </Project>

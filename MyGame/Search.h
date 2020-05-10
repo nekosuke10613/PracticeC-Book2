@@ -37,6 +37,7 @@ bool BFS(const Graph& graph, const GraphNode* start,
 	//最初のノードをキューに入れる
 	q.emplace(start);
 
+	//キューの中身(未調査ノード)が空になるまで続ける
 	while (!q.empty()) {
 		//ノードを1つキューから出す
 		const GraphNode* current = q.front();
@@ -100,4 +101,63 @@ void TestBFS() {
 	}
 	
 
+}
+float ComputeHeuristic(const WeightedGraphNode*, const WeightedGraphNode* b) {
+	return 0.0f;
+}
+struct GBFSScratch {
+	const WeightedEdge* m_parentEdge = nullptr;
+	float m_heuristic = 0.0f;
+	bool m_inOpenSet = false;
+	bool m_inClosedSet = false;
+};
+using GBFSMap =
+std::unordered_map<const WeightedGraphNode*, GBFSScratch>;
+
+bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start,
+	const WeightedGraphNode* goal, GBFSMap& outMap) {
+	//オープンセットの動的配列を定義
+	std::vector<const WeightedGraphNode*> openSet;
+
+	//現在のノードをStartに設定し、CloseSetにマーク
+	const WeightedGraphNode* current = start;
+	outMap[current].m_inClosedSet = true;
+
+	do {
+		//OpenSetに隣接ノードを追加する
+		for (const WeightedEdge* edge : current->m_edges) {
+			//このノードのスクラッチデータを取得する
+			GBFSScratch& data = outMap[edge->m_to];
+			//ClosedSetにない場合のみ追加する
+			if (!data.m_inClosedSet) {
+				//隣接ノードの親エッジを取得する
+				data.m_parentEdge = edge;
+				if (!data.m_inOpenSet) {
+					//このノードのヒューリスティックを計算し、オープンセットに追加します
+					data.m_heuristic = ComputeHeuristic(edge->m_to, goal);
+					data.m_inOpenSet = true;
+					openSet.emplace_back(edge->m_to);
+				}
+
+			}
+
+		}
+		//OpenSetが空なら使えるすべてのパスが使い果たされる
+		if (openSet.empty()) {
+			break;
+		}
+		//OpenSetから最もコストが低いノードを探す
+		auto iter = std::min_element(openSet.begin(), openSet.end(),
+			[&outMap](const WeightedGraphNode* a, const WeightedGraphNode* b) {
+			return outMap[a].m_heuristic < outMap[b].m_heuristic;
+		});
+		//現在に設定しOpenからCloseに移動する
+		current = *iter;
+		openSet.erase(iter);
+		outMap[current].m_inOpenSet = false;
+		outMap[current].m_inClosedSet = true;
+	} while (current != goal);
+
+	//パスが見つかったか
+	return (current == goal) ? true : false;
 }
