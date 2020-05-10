@@ -165,7 +165,7 @@ bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start,
 struct Asterscratch {
 	const WeightedEdge* m_parentEdge = nullptr;
 	float m_heuristic = 0.0f;
-	float m_actualFromStart = 0.0f;
+	float m_actualFromStart = 0.0f;//f(x)’l‚ÌŠi”[
 	bool m_inOpenSet = false;
 	bool m_inClosedSet = false;
 };
@@ -234,6 +234,67 @@ bool Aster(const WeightedGraph& g, const WeightedGraphNode* start,
 	return (current == goal) ? true : false;
 
 }
-void TestHeuristic(bool useASter) {
+void testHeuristic(bool useAStar)
+{
+	WeightedGraph g;
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			WeightedGraphNode* node = new WeightedGraphNode;
+			g.m_nodes.emplace_back(node);
+		}
+	}
 
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			WeightedGraphNode* node = g.m_nodes[i * 5 + j];
+			if (i > 0)
+			{
+				WeightedEdge* e = new WeightedEdge;
+				e->m_from = node;
+				e->m_to = g.m_nodes[(i - 1) * 5 + j];
+				e->m_weight = 1.0f;
+				node->m_edges.emplace_back(e);
+			}
+			if (i < 4)
+			{
+				WeightedEdge* e = new WeightedEdge;
+				e->m_from = node;
+				e->m_to = g.m_nodes[(i + 1) * 5 + j];
+				e->m_weight = 1.0f;
+				node->m_edges.emplace_back(e);
+			}
+			if (j > 0)
+			{
+				WeightedEdge* e = new WeightedEdge;
+				e->m_from = node;
+				e->m_to = g.m_nodes[i * 5 + j - 1];
+				e->m_weight = 1.0f;
+				node->m_edges.emplace_back(e);
+			}
+			if (j < 4)
+			{
+				WeightedEdge* e = new WeightedEdge;
+				e->m_from = node;
+				e->m_to = g.m_nodes[i * 5 + j + 1];
+				e->m_weight = 1.0f;
+				node->m_edges.emplace_back(e);
+			}
+		}
+	}
+	bool found = false;
+	if (useAStar)
+	{
+		AStarMap map;
+		found = Aster(g, g.m_nodes[0], g.m_nodes[9], map);
+	}
+	else
+	{
+		GBFSMap map;
+		found = GBFS(g, g.m_nodes[0], g.m_nodes[9], map);
+	}
+	std::cout << found << '\n';
 }
