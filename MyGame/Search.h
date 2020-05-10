@@ -161,3 +161,79 @@ bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start,
 	//パスが見つかったか
 	return (current == goal) ? true : false;
 }
+
+struct Asterscratch {
+	const WeightedEdge* m_parentEdge = nullptr;
+	float m_heuristic = 0.0f;
+	float m_actualFromStart = 0.0f;
+	bool m_inOpenSet = false;
+	bool m_inClosedSet = false;
+};
+using AStarMap =
+std::unordered_map<const WeightedGraphNode*, Asterscratch>;
+
+bool Aster(const WeightedGraph& g, const WeightedGraphNode* start,
+	const WeightedGraphNode* goal, AStarMap&  outMap) {
+	//オープンセットの動的配列を定義
+	std::vector<const WeightedGraphNode*> openSet;
+
+	//現在のノードをStartに設定し、CloseSetにマーク
+	const WeightedGraphNode* current = start;
+	outMap[current].m_inClosedSet = true;
+
+	do {
+		//OpenSetに隣接ノードを追加する
+		for (const WeightedEdge* edge : current->m_edges) {
+			const WeightedGraphNode* neighbor = edge->m_to;
+			//このノードのスクラッチデータを取得
+			Asterscratch& data = outMap[neighbor];
+			//クローズドセットにないノードだけをチェック
+			if (!data.m_inClosedSet) {
+				if (!data.m_inOpenSet) {
+					//オープンセットになければ親はカレントに違いない
+					data.m_parentEdge = edge;
+					data.m_heuristic = ComputeHeuristic(neighbor,goal);
+					//実際のコストは、親のコスト＋エッジをたどるコスト
+					data.m_actualFromStart = outMap[current].m_actualFromStart +
+						edge->m_weight;
+					data.m_inOpenSet = true;
+					openSet.emplace_back(neighbor);
+
+				}
+				else {
+					//選択中を親にしたときの経路コストを計算
+					float newG = outMap[current].m_actualFromStart + edge->m_weight;
+					if (newG < data.m_actualFromStart) {
+						//このノードの親をカレントにする
+						data.m_parentEdge = edge;
+						data.m_actualFromStart = newG;
+					}
+				}
+			}
+		}
+		//OpenSetが空なら使えるすべてのパスが使い果たされる
+		if (openSet.empty()) {
+			break;
+		}
+		//OpenSetから最もコストが低いノードを探す
+		auto iter = std::min_element(openSet.begin(), openSet.end(),
+			[&outMap](const WeightedGraphNode* a, const WeightedGraphNode* b) {
+			//ノードa・bのf（x）を計算します
+			float fOfA = outMap[a].m_heuristic + outMap[a].m_actualFromStart;
+			float fOfB = outMap[b].m_heuristic + outMap[b].m_actualFromStart;
+			return fOfA < fOfB;
+		});
+		//currentをセットして、Open→Closeに移動する
+		current = *iter;
+		openSet.erase(iter);
+		outMap[current].m_inOpenSet = true;
+		outMap[current].m_inClosedSet = true;
+	} while (current != goal);
+
+	//パスが見つかったか
+	return (current == goal) ? true : false;
+
+}
+void TestHeuristic(bool useASter) {
+
+}
