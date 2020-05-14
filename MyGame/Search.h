@@ -298,3 +298,110 @@ void testHeuristic(bool useAStar)
 	}
 	std::cout << found << '\n';
 }
+//ゲーム木　3目並べ
+struct GameState {
+	enum SquareState { Empty, X, O };
+	SquareState m_board[3][3];
+};
+struct GTNode {
+	//子のノード
+	std::vector<GTNode*> m_children;
+	//ゲームの状態
+	GameState m_state;
+};
+void GetStates(GTNode* root, bool x_player) {
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (root->m_state.m_board[i][j] == GameState::Empty) {
+				GTNode* node  = new GTNode;
+				root->m_children.emplace_back(node);
+				node->m_state = root->m_state;
+				node->m_state.m_board[i][j] = x_player ? GameState::X : GameState::O;
+				GetStates(node, !x_player);
+			}
+		}
+	}
+}
+float GetScore(const GameState& state) {
+	//いずれかの行が同じか
+	for (int i = 0; i < 3; i++) {
+		bool same = true;
+		GameState::SquareState v = state.m_board[i][0];
+		for (int j = 1; j < 3; j++) {
+			if (state.m_board[i][j] != v) {
+				same = false;
+			}
+		}
+		if (same) {
+			if (v == GameState::X)
+				return 1.0f;
+			else
+				return -1.0f;
+		}
+	}
+	//いずれかの列が同じか？
+	for (int j = 0; j < 3; j++) {
+		bool same = true;
+		GameState::SquareState v = state.m_board[0][j];
+		for (int i = 1; i < 3; i++) {
+			if (state.m_board[i][j] != v) {
+				same = false;
+			}
+		}
+		if (same) {
+			if (v == GameState::X)
+				return 1.0f;
+			else
+				return -1.0f;
+		}
+	}
+	//対角線のチェックをする
+	if (((state.m_board[0][0] == state.m_board[1][1]) &&
+		(state.m_board[1][1] == state.m_board[2][2])) ||
+		((state.m_board[2][0] == state.m_board[1][1]) &&
+		(state.m_board[1][1] == state.m_board[0][2]))) {
+		
+		if (state.m_board[1][1] == GameState::X)
+			return 1.0f;
+		else
+			return -1.0f;
+	}
+	//ここまで来たら引き分け
+	return 0.0f;
+	
+}
+float MaxPlayer(const GTNode* node) {
+	//このノード尾がリーフなら、スコアを返す
+	if (node->m_children.empty())
+		return GetScore(node->m_state);
+	float maxValue = -std::numeric_limits<float>::infinity();
+	//最大値のサブツリーを探す
+	for (const GTNode* child : node->m_children) {
+		maxValue = std::max(maxValue, MinPlayer(child));
+	}
+	return maxValue;
+}
+float MinPlayer(const GTNode* node) {
+	//このノード尾がリーフなら、スコアを返す
+	if (node->m_children.empty())
+		return GetScore(node->m_state);
+	float minValue = std::numeric_limits<float>::infinity();
+	//最大値のサブツリーを探す
+	for (const GTNode* child : node->m_children) {
+		minValue = std::min(minValue, MinPlayer(child));
+	}
+	return minValue;
+}
+const GTNode* MinimaxDecide(const GTNode* root) {
+	//終了状態または最大の深さに達したか？
+	const GTNode* choice = nullptr;
+	float maxValue = -std::numeric_limits<float>::infinity();
+	for (const GTNode* child : root->m_children) {
+		float v = MinPlayer(child);
+		if (v > maxValue) {
+			maxValue = v;
+			choice = child;
+		}
+	}
+	return choice;
+}
