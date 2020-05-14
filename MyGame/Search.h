@@ -405,3 +405,66 @@ const GTNode* MinimaxDecide(const GTNode* root) {
 	}
 	return choice;
 }
+float AlphaBetaMax(const GTNode* node, float alpha, float beta) {
+	//これが葉(最下層？)だったらスコアを返す
+	if (node->m_children.empty()) {
+		return GetScore(node->m_state);
+	}
+	float maxValue = -std::numeric_limits<float>::infinity();
+	//サブツリーの中から最大値を探す
+	for (const GTNode* child : node->m_children) {
+		maxValue = std::max(maxValue, AlphaBetaMin(child, alpha, beta));
+		if (maxValue >= beta)
+			return maxValue;//betaの枝を刈る
+		alpha = std::max(maxValue, alpha);
+	}
+	return maxValue;
+}
+float AlphaBetaMin(const GTNode* node, float alpha, float beta) {
+	//これが葉(最下層？)だったらスコアを返す
+	if (node->m_children.empty()) {
+		return GetScore(node->m_state);
+	}
+	float minValue = std::numeric_limits<float>::infinity();
+	//サブツリーの中から最小値を探す
+	for (const GTNode* child : node->m_children) {
+		minValue = std::min(minValue, AlphaBetaMax(child, alpha, beta));
+		if (minValue >= beta)
+			return minValue;//betaの枝を刈る
+		alpha = std::min(minValue, alpha);
+	}
+	return minValue;
+}
+const GTNode* AlphaBetaDecide(const GTNode* root) {
+	//サブツリーから最大値を探して、選択中に保存する
+	const GTNode* choice = nullptr;
+	float maxValue = -std::numeric_limits<float>::infinity();
+	float beta = std::numeric_limits<float>::infinity();
+	for (const GTNode* child : root->m_children) {
+		
+		float v = AlphaBetaMin(child, maxValue, beta);
+		//Alphaの下限を上げる
+		if (v > maxValue) {
+			maxValue = v;
+			choice = child;
+		}
+	}
+	return choice;
+}
+void testTicTac() {
+	GTNode* root = new GTNode;
+	root->m_state.m_board[0][0] = GameState::O;
+	root->m_state.m_board[0][1] = GameState::Empty;
+	root->m_state.m_board[0][2] = GameState::X;
+	root->m_state.m_board[1][0] = GameState::X;
+	root->m_state.m_board[1][1] = GameState::O;
+	root->m_state.m_board[1][2] = GameState::O;
+	root->m_state.m_board[2][0] = GameState::X;
+	root->m_state.m_board[2][1] = GameState::Empty;
+	root->m_state.m_board[2][2] = GameState::Empty;
+
+	GetStates(root, true);
+	const GTNode* choice = AlphaBetaDecide(root);
+	std::cout << choice->m_children.size();
+}
+
