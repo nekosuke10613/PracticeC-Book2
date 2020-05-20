@@ -33,7 +33,7 @@ Grid::Grid(Game * game):
 			}
 			if (i < NUM_ROWS - 1) {
 				m_tiles[i][j]->
-					m_adjacent.push_back(m_tiles[i][j-1]);
+					m_adjacent.push_back(m_tiles[i+1][j]);
 			}
 			if (j > 0) {
 				m_tiles[i][j]->

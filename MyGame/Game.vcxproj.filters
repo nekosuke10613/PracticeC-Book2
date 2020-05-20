@@ -31,13 +31,7 @@
     <ClCompile Include="BGSpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ship.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MoveComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Asteroid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Random.cpp">
@@ -47,9 +41,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CircleComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Laser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CollisionComponent.cpp">
@@ -102,15 +93,10 @@
     <ClInclude Include="BGSpriteComponent.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ship.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="MoveComponent.h" />
-    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="CircleComponent.h" />
-    <ClInclude Include="Laser.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="AIState.h" />
     <ClInclude Include="AIComponent.h" />
