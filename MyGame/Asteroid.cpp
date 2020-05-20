@@ -37,11 +37,11 @@ Asteroid::Asteroid(Game * game):
 	//string‚ÅŽw’è‚·‚é‚ÌŒ™‚¢
 	ac->ChangeState("Patrol");
 	
-	game->AddAsteroid(this);
+	//game->AddAsteroid(this);
 
 }
 
 Asteroid::~Asteroid()
 {
-	GetGame()->RemoveAsteroid(this);
+	//GetGame()->RemoveAsteroid(this);
 }

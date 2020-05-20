@@ -4,13 +4,14 @@
 
 //Actor
 #include"Actor.h"
-#include"Ship.h"
-#include"Asteroid.h"
+#include"Grid.h"
+#include"Enemy.h"
 #include"Random.h"
 
 //Component
-#include "BGSpriteComponent.h"
 #include"SpriteComponent.h"
+#include"AIComponent.h"
+#include"AIState.h"
 
 
 Game::Game()
@@ -84,6 +85,7 @@ void Game::RunLoop()
 		GenerateOutput();
 	}
 }
+
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -180,15 +182,7 @@ void Game::GenerateOutput()
 }
 void Game::LoadData()
 {
-	m_ship = new Ship(this);
-	m_ship->SetPosition(Vector2(512.0f, 384.0f));
-	m_ship->SetRotation(Math::PiOver2);
-	// Create asteroids
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
-	{
-		new Asteroid(this);
-	}
+	m_grid = new Grid(this);
 
 }
 
@@ -234,20 +228,6 @@ SDL_Texture * Game::GetTexture(const std::string & fileName)
 		m_texture.emplace(fileName.c_str(), tex);
 	}
 	return tex;
-}
-
-void Game::AddAsteroid(Asteroid * ast)
-{
-	m_asteroids.emplace_back(ast);
-}
-
-void Game::RemoveAsteroid(Asteroid * ast)
-{
-	auto iter = std::find(m_asteroids.begin(),
-		m_asteroids.end(), ast);
-	if (iter != m_asteroids.end()) {
-		m_asteroids.erase(iter);
-	}
 }
 
 
@@ -308,6 +288,25 @@ void Game::RemoveSprite(SpriteComponent * sprite)
 	//
 	auto iter = std::find(m_sprite.begin(), m_sprite.end(), sprite);
 	m_sprite.erase(iter);
+}
+Enemy * Game::GetNearestEnemy(const Vector2 & pos)
+{
+	Enemy*best = nullptr;
+
+	if (m_enemys.size() > 0) {
+		best = m_enemys[0];
+
+		float bestDistSq = (pos - m_enemys[0]->GetPosition()).LengthSq();
+		for (size_t i = 1; i < m_enemys.size(); i++) {
+			float newDistSq = (pos - m_enemys[i]->GetPosition()).LengthSq();
+			if (newDistSq < bestDistSq) {
+				bestDistSq = bestDistSq;
+				best = m_enemys[i];
+			}
+		}
+	}
+
+	return best;
 }
 
 

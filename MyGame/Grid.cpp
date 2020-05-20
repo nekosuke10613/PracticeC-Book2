@@ -1,5 +1,7 @@
 #include "Grid.h"
 #include "Tile.h"
+#include"Tower.h"
+#include"Enemy.h"
 #include<algorithm>
 
 Grid::Grid(Game * game):
@@ -112,33 +114,90 @@ bool Grid::FindPath(Tile * start, Tile * goal)
 				}
 				else {
 					//今選択中のものが親なら、g(x)のコストを計算する
+					float newG = current->g + TILE_SIZE;
+					if (newG < neighbor->g) {
+						//このノードを採用する
+						neighbor->m_parent = current;
+						neighbor->g = newG;
+						// g（x）が変わるためf（x）が変わる 
+						neighbor->f = neighbor->g + neighbor->h;
+					}
 				}
 			}
 		}
-	}
-	return false;
+
+		//オープンセットが空だったらループから抜ける
+		if (openSet.empty()) 
+			break;
+		//OpenSet内の最低コストのノードを探す
+		auto iter = std::min_element(openSet.begin(),openSet.end(),
+			[](Tile* a, Tile* b) {
+			return a->f < b->f;
+		});
+		//currentにセットしてOpenからClosedに移動する
+		current = *iter;
+		openSet.erase(iter);
+		current->m_inOpenSet = false;
+		current->m_inClosedSet = true;
+	} while (current != goal);
+
+	return (current == goal) ? true : false;
 }
 
 void Grid::BuildTower()
 {
+	if (m_selectedTile && !m_selectedTile->m_blooked) {
+		m_selectedTile->m_blooked = true;
+		if (FindPath(GetEndTile(), GetStartTile())) {
+			Tower* t = new Tower(GetGame());
+			t->SetPosition(m_selectedTile->GetPosition());
+		}
+		else {
+
+			//このタワーはパスをブロックするため、建築許可しない
+			m_selectedTile->m_blooked = false;
+			FindPath(GetEndTile(), GetStartTile());
+		}
+		UpdatePathTiles(GetStartTile());
+	}
 }
 
 Tile * Grid::GetStartTile()
 {
-	return nullptr;
+	return m_tiles[3][0];
 }
 
 Tile * Grid::GetEndTile()
 {
-	return nullptr;
+	return m_tiles[3][15];
 }
 
 void Grid::UpdateActor(float deltaTime)
 {
+	Actor::UpdateActor(deltaTime);
+
+	//一定時間ごとに新しい敵を生成
+	m_nextEnemy -= deltaTime;
+	if (m_nextEnemy <= 0.0f) {
+		new Enemy(GetGame());
+		m_nextEnemy += ENEMY_TIME;
+	}
 }
 
 
 
 void Grid::UpdatePathTiles(Tile * start)
 {
+	//開始・終了を除く通常タイルをリセットする
+	for (size_t i = 0; i < NUM_ROWS; i++) {
+		for (size_t j = 0; j < NUM_COLS; j++) {
+			if (!(i == 3 && j == 0) && !(i == 3 && j == 15))
+				m_tiles[i][j]->SetTileState(Tile::EDefault);
+		}
+	}
+	Tile* t = start->m_parent;
+	while (t != GetEndTile()) {
+		t->SetTileState(Tile::EPath);
+		t = t->m_parent;
+	}
 }

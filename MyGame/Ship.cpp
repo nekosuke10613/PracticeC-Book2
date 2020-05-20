@@ -29,13 +29,13 @@ void Ship::UpdateActor(float deltaTime)
 	//ƒŒ[ƒU[‚Ì—â‹pŠÔ
 	m_laserCooldown -= deltaTime;
 	//è¦Î‚Æ‚ÌÕ“Ë
-	for (auto ast : GetGame()->GetAsteroids()) {
-		if (Intersect(*m_collision, *(ast->GetCircle()))) {
-			//“–‚½‚Á‚½‚Ìˆ—
-			Dead();
-			break;
-		}
-	}
+	//for (auto ast : GetGame()->GetAsteroids()) {
+	//	if (Intersect(*m_collision, *(ast->GetCircle()))) {
+	//		//“–‚½‚Á‚½‚Ìˆ—
+	//		Dead();
+	//		break;
+	//	}
+	//}
 	
 	if (m_isDead) {
 		m_deadTime -= deltaTime;

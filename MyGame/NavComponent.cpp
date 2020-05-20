@@ -1,5 +1,6 @@
 #include "NavComponent.h"
 #include "Actor.h"
+#include"Tile.h"
 
 NavComponent::NavComponent(Actor * owner, int updateOrder):
 	MoveComponent(owner, updateOrder)

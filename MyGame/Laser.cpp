@@ -27,16 +27,16 @@ void Laser::UpdateActor(float deltaTime)
 	else
 	{
 		//小惑星と交差するか？
-		for (auto ast : GetGame()->GetAsteroids()) {
-			if (Intersect(*m_circle, *(ast->GetCircle())))
-			{
-				//レーザーが小惑星と交差したら
-				//レーザーも小惑星も消える
-				SetState(EDead);
-				ast->SetState(EDead);
-				break;
-			}
-		
-		}
+		//for (auto ast : GetGame()->GetAsteroids()) {
+		//	if (Intersect(*m_circle, *(ast->GetCircle())))
+		//	{
+		//		//レーザーが小惑星と交差したら
+		//		//レーザーも小惑星も消える
+		//		SetState(EDead);
+		//		ast->SetState(EDead);
+		//		break;
+		//	}
+		//
+		//}
 	}
 }

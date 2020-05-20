@@ -3,6 +3,7 @@
 #include<unordered_map>
 #include<string>
 #include<vector>
+#include"Math.h"
 
 class Game {
 public:
@@ -24,10 +25,9 @@ public:
 	SDL_Texture* GetTexture(const std::string& fileName);
 	
 	//ゲーム用
-	void AddAsteroid(class Asteroid* ast);
-	void RemoveAsteroid(class Asteroid* ast);
-	std::vector<class Asteroid*>& GetAsteroids() { return m_asteroids; }
-
+	class Grid* GetGrid() { return m_grid; }
+	std::vector<class Enemy*>& GetEnemies() { return m_enemys; }
+	class Enemy* GetNearestEnemy(const Vector2& pos);
 
 private:
 	//ゲームループのためのヘルパー関数
@@ -61,8 +61,9 @@ private:
 	bool m_updatetingActors{ false };
 
 	//ゲーム用
-	class Ship* m_ship;
-	std::vector<class Asteroid*> m_asteroids;
+	std::vector<class Enemy*> m_enemys;
+	class Grid* m_grid;
+	float m_nextEnemy;
 
 
 };
