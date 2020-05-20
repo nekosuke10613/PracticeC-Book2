@@ -5,6 +5,8 @@
 #include"Grid.h"
 #include"Tile.h"
 #include"CircleComponent.h"
+#include"AIComponent.h"
+#include"AIState.h"
 #include<algorithm>
 
 Enemy::Enemy(class Game* game):
@@ -23,6 +25,13 @@ Enemy::Enemy(class Game* game):
 
 	m_circle = new CircleComponent(this);
 	m_circle->SetRadius(25.0f);
+
+	m_ai = new AIComponent(this);
+	m_ai->AddState(new AIPatrol(m_ai));
+	m_ai->AddState(new AIDeath(m_ai));
+	m_ai->ChangeState("Patrol");
+
+
 }
 
 Enemy::~Enemy()
@@ -39,6 +48,7 @@ void Enemy::UpdateActor(float deltaTime)
 
 	Vector2 diff = GetPosition() - GetGame()->GetGrid()->GetEndTile()->GetPosition();
 	if (Math::NearZero(diff.Length(), 10.0f)) {
+		m_ai->ChangeState("Death");
 		SetState(EDead);
 	}
 }

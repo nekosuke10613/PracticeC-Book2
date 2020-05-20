@@ -106,6 +106,17 @@ void Game::ProcessInput()
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		m_isRunning = false;
 	}
+	//---------ƒQ[ƒ€ŒÅ—L“ü—Í--------------
+	if (state[SDL_SCANCODE_B]) {
+		m_grid->BuildTower();
+	}
+	int x, y;
+	Uint32 buttons = SDL_GetMouseState(&x, &y);
+	if (SDL_BUTTON(buttons) & SDL_BUTTON_LEFT) {
+		m_grid->ProcessClick(x, y);
+	}
+	//-----------------------
+
 
 	m_updatetingActors = true;
 	for (auto actor : m_actors) {

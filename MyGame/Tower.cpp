@@ -9,7 +9,7 @@ Tower::Tower(Game * game):
 	Actor(game)
 {
 	SpriteComponent* sc = new SpriteComponent(this, 200);
-	sc->SetTexture(game->GetTexture("Asset/Tower.png"));
+	sc->SetTexture(game->GetTexture("Assets/Tower.png"));
 
 	m_move = new MoveComponent(this);
 	

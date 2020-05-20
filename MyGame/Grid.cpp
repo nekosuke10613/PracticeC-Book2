@@ -43,7 +43,6 @@ Grid::Grid(Game * game):
 				m_tiles[i][j]->
 					m_adjacent.push_back(m_tiles[i][j+1]);
 			}
-
 		}
 	}
 	//ƒpƒX‚ğŒŸõ(‹t‡)
