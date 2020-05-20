@@ -33,7 +33,25 @@ bool Game::Initialize()
 		SDL_Log("SDL を初期化できません：%s", SDL_GetError());
 		return false;
 	}
-	//Window作成
+
+	/* OpenGLウィンドウの属性を指定(必ずウィンドウ作成前に行う) */
+	//コアOpenGLプロファイルを使う
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	//バージョン3.3指定
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	//RGBA各チャンネル8ビットのカラーバッファを使う
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	//ダブルバッファを有効にする
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	//ハードウェアアクセラレーションを使う
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+
+	/* Window作成 */
 	//SDL_WINDOW_FULLSCREEN フルスクリーンモードを使う
 	//SDL_WINDOW_FULLSCREEN_DESCTOP　現在のデスクトップの解像度でフルスクリーンモードを使う（幅と高さのパラメータ無視）
 	//SDL_WINDOW_OPENGL　OpenGLを使う
@@ -44,7 +62,7 @@ bool Game::Initialize()
 		100,		//ウィンドウ左端隅のｙ座標
 		1024,		//ウィンドウの幅
 		768,		//ウィンドウの高さ
-		0			//ウィンドウ作成フラグ(設定しない時は０)
+		SDL_WINDOW_OPENGL			//ウィンドウ作成フラグ(設定しない時は０)
 	);
 	//ウィンドウ作成が失敗したか(失敗したらnullptr)
 	if (!m_window) {
@@ -53,16 +71,16 @@ bool Game::Initialize()
 	}
 
 	//レンダラーの作成
-	m_renderer = SDL_CreateRenderer(
-		m_window,//作成するレンダラーの描画対象となるウィンドウ
-		-1,		 //グラフィックスドライバの指定　通常はー１
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-	);
+	//m_renderer = SDL_CreateRenderer(
+	//	m_window,//作成するレンダラーの描画対象となるウィンドウ
+	//	-1,		 //グラフィックスドライバの指定　通常はー１
+	//	SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+	//);
 	//レンダラー作成が失敗したか
-	if (!m_renderer) {
+	/*if (!m_renderer) {
 		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
 		return false;
-	}
+	}*/
 	if (IMG_Init(IMG_INIT_PNG) == 0) {
 		SDL_Log("SDL_Imageの作成に失敗しました:%s", SDL_GetError());
 		return false;
@@ -169,27 +187,27 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	//描画色の指定
-	SDL_SetRenderDrawColor(
-		m_renderer,
-		255,	// R
-		150,	// G
-		150,    // B
-		255		// A
-	);
+	////描画色の指定
+	//SDL_SetRenderDrawColor(
+	//	m_renderer,
+	//	255,	// R
+	//	150,	// G
+	//	150,    // B
+	//	255		// A
+	//);
 	//バックバッファのクリア
-	SDL_RenderClear(m_renderer);
+	//SDL_RenderClear(m_renderer);
 
-	//ゲームの処理
-	// Draw all sprite components
-	for (auto sprite : m_sprite)
-	{
-		sprite->Draw(m_renderer);
-	}
+	////ゲームの処理
+	//// Draw all sprite components
+	//for (auto sprite : m_sprite)
+	//{
+	//	sprite->Draw(m_renderer);
+	//}
 
 
-	//フロントバッファとバックバッファを交換
-	SDL_RenderPresent(m_renderer);
+	////フロントバッファとバックバッファを交換
+	//SDL_RenderPresent(m_renderer);
 }
 void Game::LoadData()
 {
@@ -229,12 +247,12 @@ SDL_Texture * Game::GetTexture(const std::string & fileName)
 		}
 
 		//surfaceテクスチャ作成
-		tex = SDL_CreateTextureFromSurface(m_renderer, surf);
-		SDL_FreeSurface(surf);
+		//tex = SDL_CreateTextureFromSurface(m_renderer, surf);
+		/*SDL_FreeSurface(surf);
 		if (!tex) {
 			SDL_Log("surfaceのテクスチャ変換に失敗しました ファイル名:%s", fileName.c_str());
 			return nullptr;
-		}
+		}*/
 
 		m_texture.emplace(fileName.c_str(), tex);
 	}
@@ -247,7 +265,7 @@ void Game::Shutdown()
 	UnloadData();
 	IMG_Quit();
 	//Windowを破棄する
-	SDL_DestroyRenderer(m_renderer);
+	//SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
 	
 	SDL_Quit();
