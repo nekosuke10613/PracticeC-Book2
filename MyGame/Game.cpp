@@ -1,5 +1,6 @@
 #include"Game.h"
-#include"SDL/SDL_image.h"
+//#include"SDL/SDL_image.h"
+#include<GL/glew.h>
 #include<algorithm>
 
 //Actor
@@ -70,6 +71,27 @@ bool Game::Initialize()
 		return false;
 	}
 
+	//OpenGL コンテキストの作成
+	m_context = SDL_GL_CreateContext(m_window);
+	//GLEWの初期化
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK) {
+		SDL_Log("Failed to initialize GLEW.");
+		return false;
+	}
+	
+
+	//一部のプラットフォームでは、GLEWは無害なエラーコードを出力します。
+	glGetError();
+	//コンパイル済シェーダーのロード
+	if (!LoadShaders()) {
+		SDL_Log("Failed to load shaders.");
+		return false;
+	}
+
+	//Quadにスプライトを描画したものを作成
+	CreateSpriteVerts();
+
 	//レンダラーの作成
 	//m_renderer = SDL_CreateRenderer(
 	//	m_window,//作成するレンダラーの描画対象となるウィンドウ
@@ -81,11 +103,12 @@ bool Game::Initialize()
 		SDL_Log("Renderer作成に失敗しました：%s", SDL_GetError());
 		return false;
 	}*/
-	if (IMG_Init(IMG_INIT_PNG) == 0) {
+	/*if (IMG_Init(IMG_INIT_PNG) == 0) {
 		SDL_Log("SDL_Imageの作成に失敗しました:%s", SDL_GetError());
 		return false;
-	}
-	Random::Init();
+	}*/
+	//Random::Init();
+
 	LoadData();
 
 	m_ticksCount = SDL_GetTicks();
@@ -187,27 +210,28 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	////描画色の指定
-	//SDL_SetRenderDrawColor(
-	//	m_renderer,
-	//	255,	// R
-	//	150,	// G
-	//	150,    // B
-	//	255		// A
-	//);
-	//バックバッファのクリア
-	//SDL_RenderClear(m_renderer);
+	//クリアカラーを指定
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	//カラーバッファをクリア
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	////ゲームの処理
-	//// Draw all sprite components
-	//for (auto sprite : m_sprite)
-	//{
-	//	sprite->Draw(m_renderer);
-	//}
+	//全てのSpriteComponentを描画する
+	//カラーバッファでαブレンディングを有効にする
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//shader / vao　を有効にする
 
 
-	////フロントバッファとバックバッファを交換
-	//SDL_RenderPresent(m_renderer);
+	//バッファを交換。これでシーンが表示される
+	SDL_GL_SwapWindow(m_window);
+}
+bool Game::LoadShaders()
+{
+	return false;
+}
+void Game::CreateSpriteVerts()
+{
 }
 void Game::LoadData()
 {

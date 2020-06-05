@@ -34,6 +34,8 @@ private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
+	bool LoadShaders();
+	void CreateSpriteVerts();
 	void LoadData();
 	void UnloadData();
 private:
@@ -49,10 +51,14 @@ private:
 	std::vector<class SpriteComponent*> m_sprite;
 
 private:
+	class Shader* m_spriteShader;
+	class VertexArray* m_spriteVerts;
+
 	//SDLが作るウィンドウ
 	SDL_Window* m_window{ nullptr };
 	//SDLレンダラー
-	SDL_Renderer* m_renderer{ nullptr };
+	//SDL_Renderer* m_renderer{ nullptr };
+	SDL_GLContext m_context;
 	//Initから経過した時間
 	Uint32 m_ticksCount;
 	//ゲームの続行を指示
