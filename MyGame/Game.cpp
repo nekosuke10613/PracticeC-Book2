@@ -3,6 +3,9 @@
 #include<GL/glew.h>
 #include<algorithm>
 
+//OpenGL
+#include"VertexArray.h"
+
 //Actor
 #include"Actor.h"
 #include"Grid.h"
@@ -232,6 +235,19 @@ bool Game::LoadShaders()
 }
 void Game::CreateSpriteVerts()
 {
+	float vertices[] = {
+		-0.5f,  0.5f, 0.f, 0.f, 0.f, // top left
+		 0.5f,  0.5f, 0.f, 1.f, 0.f, // top right
+		 0.5f, -0.5f, 0.f, 1.f, 1.f, // bottom right
+		-0.5f, -0.5f, 0.f, 0.f, 1.f  // bottom left
+	};
+
+	unsigned int indices[] = {
+		0,1,2,
+		2,3,0
+	};
+	m_spriteVerts = new VertexArray(vertices, 4,//Sprite用の4つの頂点
+		indices, 6/*4角形を作るには3角形(3頂点)が2つ*/);
 }
 void Game::LoadData()
 {
