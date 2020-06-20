@@ -5,6 +5,7 @@
 
 //OpenGL
 #include"VertexArray.h"
+#include"Shader.h"
 
 //Actor
 #include"Actor.h"
@@ -193,7 +194,9 @@ void Game::UpdateGame()
 
 	//待ちアクターをm_actorsに移動する
 	for (auto pending : m_pendingActors) {
+		pending->ComputeWorldTransform();
 		m_actors.emplace_back(pending);
+		
 	}
 	m_pendingActors.clear();
 
@@ -223,15 +226,31 @@ void Game::GenerateOutput()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//shader / vao　を有効にする
+	//スプライトシェーダーと頂点配列オブジェクトをアクティブ化
+	m_spriteShader->SetActive();
+	m_spriteVerts->SetActive();
 
+	//全てのスプライトを描画
+	for (auto sprite : m_sprite)
+	{
+		sprite->Draw(m_spriteShader);
+	}
 
 	//バッファを交換。これでシーンが表示される
 	SDL_GL_SwapWindow(m_window);
 }
 bool Game::LoadShaders()
 {
-	return false;
+	m_spriteShader = new Shader();
+	if (!m_spriteShader->Load("Shaders/Transform.vert", "Shaders/Basic.frag")) {
+		return false;
+	}
+	m_spriteShader->SetActive();
+	//view/projection Matrixのセット
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.0f, 768.0f);
+	m_spriteShader->SetmatrixUniform("uViewProj", viewProj);
+
+	return true;
 }
 void Game::CreateSpriteVerts()
 {

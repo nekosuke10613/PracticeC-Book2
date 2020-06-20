@@ -39,6 +39,9 @@ public :
 	float GetRotation()const { return m_rotation; }
 	void SetRotation(float rotation) { m_rotation = rotation; }
 	
+	void ComputeWorldTransform();
+	const Matrix4& GetWorldTransform() const { return m_worldTransform; }
+
 	Vector2 GetForward() const { return Vector2(Math::Cos(m_rotation), -Math::Sin(m_rotation)); }
 
 	//state
@@ -56,9 +59,11 @@ private:
 	//アクターの状態
 	State m_state{ EActive };
 	//座標変換
+	Matrix4 m_worldTransform;
 	Vector2 m_position{Vector2::Zero};
 	float m_scale{ 1.0f };
 	float m_rotation{ 0.0f };
+	bool m_recomputeWorldTransform{ true };
 	
 	//アクターが持つコンポーネント
 	std::vector<class Component*> m_components;

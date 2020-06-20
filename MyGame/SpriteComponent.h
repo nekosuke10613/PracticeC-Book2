@@ -9,7 +9,7 @@ public:
 	SpriteComponent(class Actor* owner, int drawOrder = 100);
 	~SpriteComponent();
 
-	virtual void Draw(SDL_Renderer* renderer);
+	virtual void Draw(class Shader* shader);
 	virtual void SetTexture(SDL_Texture* texture);
 
 	/* ゲッター・セッター */

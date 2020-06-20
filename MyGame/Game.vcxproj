@@ -29,6 +29,7 @@
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="NavComponent.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Tower.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="NavComponent.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Search.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Tower.h" />

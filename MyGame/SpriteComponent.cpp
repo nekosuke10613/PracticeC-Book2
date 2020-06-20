@@ -1,4 +1,6 @@
 #include "SpriteComponent.h"
+#include"Texture.h"
+#include"Shader.h"
 #include"Actor.h"
 #include"Game.h"
 
@@ -14,26 +16,25 @@ SpriteComponent::~SpriteComponent()
 	m_owner->GetGame()->RemoveSprite(this);
 }
 
-void SpriteComponent::Draw(SDL_Renderer * renderer)
+void SpriteComponent::Draw(Shader*  shader)
 {
-	if (m_texture) {
-		SDL_Rect r;
-		//幅と高さを所有アクターのスケールで拡縮する
-		r.w = static_cast<int>(m_texWidth * m_owner->GetScale());
-		r.h = static_cast<int>(m_texHeight * m_owner->GetScale());
-		//矩形の中心を所有アクターの位置に合わせる
-		r.x = static_cast<int>(m_owner->GetPosition().x - r.w / 2);
-		r.y = static_cast<int>(m_owner->GetPosition().y - r.w / 2);
+	//テクスチャの幅と高さで矩形をスケーリング
+	Matrix4 scalemat = Matrix4::CreateScale(
+		static_cast<float>(m_texWidth),
+		static_cast<float>(m_texHeight),
+		1.0f
+	);
+	Matrix4 world = scalemat * m_owner->GetWorldTransform();
+	//ワールド変換の設定
+	shader->SetmatrixUniform("uWorldTransform", world);
 
-		//描画する
-		SDL_RenderCopyEx(renderer,
-			m_texture,  //描画したいテクスチャ
-			nullptr,	//描画したいテクスチャの範囲
-			&r,			//出力先の矩形
-			-Math::ToDegrees(m_owner->GetRotation()),//変換された回転角
-			nullptr,	//回転中心
-			SDL_FLIP_NONE);  //反転方向
-	}
+	//矩形を描画
+	glDrawElements(
+		GL_TRIANGLES,	//描画するポリゴン・プリミティブの種類
+		6,				//インデックスバッファにあるインデックスの数
+		GL_UNSIGNED_INT,//インデックスの型
+		nullptr			//通常はnullptr
+	);
 }
 
 void SpriteComponent::SetTexture(SDL_Texture * texture)

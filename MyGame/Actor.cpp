@@ -20,10 +20,12 @@ Actor::~Actor()
 void Actor::Update(float deltaTime)
 {
 	if (m_state == EActive) {
+		ComputeWorldTransform();
 		//コンポーネント更新
 		UpdateComponents(deltaTime);
 		//アクター更新
 		UpdateActor(deltaTime);
+		ComputeWorldTransform();
 	}
 }
 
@@ -50,6 +52,23 @@ void Actor::ProcessInput(const uint8_t * keyState)
 
 void Actor::ActorInput(const uint8_t * keyState)
 {
+}
+
+void Actor::ComputeWorldTransform()
+{
+	if (m_recomputeWorldTransform) {
+		m_recomputeWorldTransform = false;
+		//スケーリング → 回転 → 平行移動
+		m_worldTransform = Matrix4::CreateScale(m_rotation);
+		m_worldTransform *= Matrix4::CreateRotationZ(m_rotation);
+		m_worldTransform *= Matrix4::CreateTranslation(
+			Vector3(m_position.x, m_position.y, 0.0f)
+		);
+		//ワールド変換の更新を紺ぷーねんとに通知する
+		for (auto comp : m_components) {
+			comp->OnUpdateWorldTransform();
+		}
+	}
 }
 
 void Actor::AddComponent(Component * component)

@@ -47,8 +47,14 @@ void Shader::SetActive()
 
 void Shader::SetmatrixUniform(const char * name, const Matrix4 & matrix)
 {
+	//この名前のuniformを探す
 	GLuint loc = glGetUniformLocation(m_shaderProgram, name);
-	glUniformMatrix4fv(loc, 1, GL_TRUE, matrix.GetAsFloatPtr());
+	glUniformMatrix4fv(
+		loc,	//uniform ID
+		1,		//行列の数(この場合は1個)
+		GL_TRUE, //行ベクトルを使うならTRUE
+		matrix.GetAsFloatPtr() //行列データへのポインタ
+	);
 }
 
 bool Shader::CompleShader(const std::string & fileName, GLenum shaderType, GLuint & outShader)
