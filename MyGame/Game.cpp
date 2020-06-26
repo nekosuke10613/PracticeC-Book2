@@ -6,6 +6,7 @@
 //OpenGL
 #include"VertexArray.h"
 #include"Shader.h"
+#include"Texture.h"
 
 //Actor
 #include"Actor.h"
@@ -242,7 +243,7 @@ void Game::GenerateOutput()
 bool Game::LoadShaders()
 {
 	m_spriteShader = new Shader();
-	if (!m_spriteShader->Load("Shaders/Transform.vert", "Shaders/Basic.frag")) {
+	if (!m_spriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag")) {
 		return false;
 	}
 	m_spriteShader->SetActive();
@@ -283,15 +284,16 @@ void Game::UnloadData()
 	}
 	//テクスチャの削除
 	for (auto i : m_texture) {
-		SDL_DestroyTexture(i.second);
+		i.second->Unload();
+		delete i.second;
 	}
 	m_texture.clear();
 
 }
 
-SDL_Texture * Game::GetTexture(const std::string & fileName)
+Texture * Game::GetTexture(const std::string & fileName)
 {
-	SDL_Texture* tex = nullptr;
+	Texture* tex = nullptr;
 	//すでに読み込まれているテクスチャなら検索して持ってくる
 	auto iter = m_texture.find(fileName);
 	if (iter != m_texture.end()) {
@@ -299,21 +301,14 @@ SDL_Texture * Game::GetTexture(const std::string & fileName)
 	}
 	else {
 		//ファイルをロードする
-		SDL_Surface* surf = IMG_Load(fileName.c_str());
-		if (!surf) {
-			SDL_Log("テクスチャのロードに失敗しました%s:", fileName.c_str());
-			return nullptr;
+		tex = new Texture();
+		if (tex->Load(fileName)) {
+			m_texture.emplace(fileName, tex);
 		}
-
-		//surfaceテクスチャ作成
-		//tex = SDL_CreateTextureFromSurface(m_renderer, surf);
-		/*SDL_FreeSurface(surf);
-		if (!tex) {
-			SDL_Log("surfaceのテクスチャ変換に失敗しました ファイル名:%s", fileName.c_str());
-			return nullptr;
-		}*/
-
-		m_texture.emplace(fileName.c_str(), tex);
+		else {
+			delete tex;
+			tex = nullptr;
+		}
 	}
 	return tex;
 }
@@ -322,9 +317,11 @@ SDL_Texture * Game::GetTexture(const std::string & fileName)
 void Game::Shutdown()
 {
 	UnloadData();
-	IMG_Quit();
+	delete m_spriteVerts;
+	m_spriteShader->Unload();
+	delete m_spriteShader;
 	//Windowを破棄する
-	//SDL_DestroyRenderer(m_renderer);
+	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);
 	
 	SDL_Quit();

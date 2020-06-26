@@ -8,7 +8,7 @@ public:
 	BGSpriteComponent(class Actor* owner, int drawOrder = 10);
 
 	void Update(float deltaTime)override;
-	void Draw(SDL_Renderer* renderer)override;
+	void Draw(class Shader*renderer)override;
 
 	//背景テクスチャのセット
 	void SetBGTexture(const std::vector<SDL_Texture*>& texture);

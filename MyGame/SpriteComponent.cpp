@@ -18,29 +18,33 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::Draw(Shader*  shader)
 {
-	//テクスチャの幅と高さで矩形をスケーリング
-	Matrix4 scalemat = Matrix4::CreateScale(
-		static_cast<float>(m_texWidth),
-		static_cast<float>(m_texHeight),
-		1.0f
-	);
-	Matrix4 world = scalemat * m_owner->GetWorldTransform();
-	//ワールド変換の設定
-	shader->SetmatrixUniform("uWorldTransform", world);
+	if (m_texture) {
+		//テクスチャの幅と高さで矩形をスケーリング
+		Matrix4 scalemat = Matrix4::CreateScale(
+			static_cast<float>(m_texWidth),
+			static_cast<float>(m_texHeight),
+			1.0f
+		);
+		Matrix4 world = scalemat * m_owner->GetWorldTransform();
+		//ワールド変換の設定
+		shader->SetmatrixUniform("uWorldTransform", world);
 
-	//矩形を描画
-	glDrawElements(
-		GL_TRIANGLES,	//描画するポリゴン・プリミティブの種類
-		6,				//インデックスバッファにあるインデックスの数
-		GL_UNSIGNED_INT,//インデックスの型
-		nullptr			//通常はnullptr
-	);
+		//アクティブなテクスチャを設定
+		m_texture->SetActive();
+		//矩形を描画
+		glDrawElements(
+			GL_TRIANGLES,	//描画するポリゴン・プリミティブの種類
+			6,				//インデックスバッファにあるインデックスの数
+			GL_UNSIGNED_INT,//インデックスの型
+			nullptr			//通常はnullptr
+		);
+	}
 }
 
-void SpriteComponent::SetTexture(SDL_Texture * texture)
+void SpriteComponent::SetTexture(Texture * texture)
 {
 	m_texture = texture;
 	//テクスチャの幅と高さを得る
-	SDL_QueryTexture(texture, nullptr, nullptr,
-		&m_texWidth, &m_texHeight);
+	m_texWidth = texture->GetWidth();
+	m_texHeight = texture->GetHeight();
 }

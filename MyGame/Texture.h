@@ -12,7 +12,7 @@ public:
 	void SetActive();
 
 	int GetWidth()const { return m_width; }
-
+	int GetHeight()const { return m_height; }
 private:
 	//このテクスチャのOpenGLID
 	unsigned int m_textureId{ 0 };

@@ -17,7 +17,7 @@ void BGSpriteComponent::Update(float deltaTime)
 	}
 }
 
-void BGSpriteComponent::Draw(SDL_Renderer * renderer)
+void BGSpriteComponent::Draw(Shader * renderer)
 {
 	for (auto& bg : m_BGTextures) {
 		SDL_Rect r;
@@ -26,7 +26,7 @@ void BGSpriteComponent::Draw(SDL_Renderer * renderer)
 		r.x = static_cast<int>(m_owner->GetPosition().x - r.w / 2 + bg.m_offset.x);
 		r.y = static_cast<int>(m_owner->GetPosition().y - r.h / 2 + bg.m_offset.y);
 		
-		SDL_RenderCopy(renderer, bg.m_texture, nullptr, &r);
+		//SDL_RenderCopy(renderer, bg.m_texture, nullptr, &r);
 	}
 }
 

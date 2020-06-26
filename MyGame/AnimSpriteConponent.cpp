@@ -20,7 +20,7 @@ void AnimSpriteComponent::Update(float deltaTime)
 			m_currentFrame -= m_animTextures.size();
 		}
 		//現在のテクスチャを設定する
-		SetTexture(m_animTextures[static_cast<int>(m_currentFrame)]);
+		//SetTexture(m_animTextures[static_cast<int>(m_currentFrame)]);
 	}
 }
 
@@ -29,6 +29,6 @@ void AnimSpriteComponent::SetAnimTextures(const std::vector<SDL_Texture*>& textu
 	m_animTextures = textures;
 	if (m_animTextures.size() > 0) {
 		m_currentFrame = 0.0f;
-		SetTexture(m_animTextures[0]);
+		//SetTexture(m_animTextures[0]);
 	}
 }

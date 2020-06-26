@@ -31,6 +31,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Tower.cpp" />
     <ClCompile Include="VertexArray.cpp" />
@@ -56,6 +57,7 @@
     <ClInclude Include="Search.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SpriteComponent.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Tower.h" />
     <ClInclude Include="VertexArray.h" />

@@ -10,7 +10,7 @@ public:
 	~SpriteComponent();
 
 	virtual void Draw(class Shader* shader);
-	virtual void SetTexture(SDL_Texture* texture);
+	virtual void SetTexture(class Texture* texture);
 
 	/* ゲッター・セッター */
 	int GetDrawOrder()const { return m_drawOrder; }
@@ -18,7 +18,7 @@ public:
 	int GetTexWidth()const { return m_texWidth; }
 
 protected:
-	SDL_Texture* m_texture{ nullptr };
+	class Texture* m_texture{ nullptr };
 	int m_drawOrder;
 	int m_texWidth{ 0 };
 	int m_texHeight{ 0 };

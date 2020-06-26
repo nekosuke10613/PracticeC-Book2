@@ -22,7 +22,7 @@ public:
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 
-	SDL_Texture* GetTexture(const std::string& fileName);
+	class Texture* GetTexture(const std::string& fileName);
 	
 	//ゲーム用
 	class Grid* GetGrid() { return m_grid; }
@@ -40,7 +40,7 @@ private:
 	void UnloadData();
 private:
 	//テクスチャリソースmap
-	std::unordered_map<std::string, SDL_Texture*> m_texture;
+	std::unordered_map<std::string, class Texture*> m_texture;
 
 	//ゲーム中の全アクターポインタ格納用
 	std::vector<class Actor*>m_actors;
